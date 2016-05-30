@@ -26,7 +26,7 @@ RUN curl -O http://nginx.org/download/nginx-${nginx_version}.tar.gz && \
     make && \
     make install && \
     mkdir -p /usr/share/nginx/html && \
-    cd / && rm -f /tmp/build
+    cd / && rm -rf /tmp/build
 
 # copy default nginx configuration
 ADD build/nginx.conf /etc/nginx/nginx.conf
