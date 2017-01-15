@@ -4,7 +4,7 @@
 CONFIG_LOCAL="/etc/nginx/nginx.conf"
 
 # first check if the download url is set. if so try to download the file via curl
-if [ -z "$CONFIG_URL" ]; then 
+if [ -z "$CONFIG_URL" ]; then
   echo "No config url set. Will use local configuration file"
 else
   echo "Config url is set. Download the configuration file"
@@ -19,6 +19,24 @@ else
   fi
 fi
 
+# check for index.html download
+INDEX_LOCAL="/etc/nginx/html/index.html"
+# first check if the download url is set. if so try to download the file via curl
+if [ -z "$INDEX_URL" ]; then
+  echo "No config url set. Will use local configuration file"
+else
+  echo "Config url is set. Download the configuration file"
+  # now try to download the configuration file
+  if [ -z "$INDEX_USERNAME" ] || [ -z "$INDEX_PASSWORD" ]; then
+    # if no usename and password is specified
+    curl "$INDEX_URL" -o "$INDEX_LOCAL"
+    [ $? -ne 0 ] && exit 1
+  else
+    curl --user $INDEX_USERNAME:$INDEX_PASSWORD "$INDEX_URL" -o "$INDEX_LOCAL"
+    [ $? -ne 0 ] && exit 1
+  fi
+fi
+
 # now check for ssl certificate
 if [ "${CONFIG_GENERATE_SSL,,}" == "yes" ]; then
   # check if the key and cert environment variables are set. if not set the default values
@@ -27,7 +45,7 @@ if [ "${CONFIG_GENERATE_SSL,,}" == "yes" ]; then
   echo "Check for SSL certificates"
   if [ ! -f "$CONFIG_SSL_KEY" ] || [ ! -f "$CONFIG_SSL_CERT" ]; then
     echo "SSL key or certficate not found. Try to generate the certificate and key"
-    # check if subj is set 
+    # check if subj is set
     if [ -z "$CONFIG_SSL_SUBJ" ]; then
         echo "Please set 'CONFIG_SSL_SUBJ' to generate the certificate"
     else
@@ -36,11 +54,17 @@ if [ "${CONFIG_GENERATE_SSL,,}" == "yes" ]; then
   fi
 fi
 
-# now parse the nginx configuration file with j2
-echo "Parse the nginx configuration file with j2"
-mv -f "$CONFIG_LOCAL" "$CONFIG_LOCAL.orig"
-j2 "$CONFIG_LOCAL.orig" > "$CONFIG_LOCAL"
-[ $? -ne 0 ] && exit 1
+
+# if the config file was mounted read-only -  as recommended in the nginx docker readme -
+# we do not parse the config
+
+if [ -w "$CONFIG_LOCAL" ]; then
+  # now parse the nginx configuration file with j2
+  echo "Parse the nginx configuration file with j2"
+  mv -f "$CONFIG_LOCAL" "$CONFIG_LOCAL.orig"
+  j2 "$CONFIG_LOCAL.orig" > "$CONFIG_LOCAL"
+  [ $? -ne 0 ] && exit 1
+fi
 
 # run nginx
 echo "Run nginx"

@@ -19,15 +19,23 @@ CONFIG_PASSWORD=<password for git authentication or http simple auth>
 before the nginx service starts the configuration file is parsed with j2cli - https://github.com/kolypto/j2cli.
 This enables you to use additional environment variables in the nginx configuration and replace them on the fly
 
-### ssl config 
-If the environment variable CONFIG_GENERATE_SSL is set to 'yes' the entry point script will check for an exisitng private 
+### ssl config
+If the environment variable CONFIG_GENERATE_SSL is set to 'yes' the entry point script will check for an exisitng private
 key and certificate in /etc/pki/tls/private/nginx.key and /etc/pki/tls/certs/nginx.crt. If the files dont exist they will
 be created automatically.
 
-If the environment variable is either missing or set to anything else then 'yes' (case-insensitive) no ssl certificates will be 
+If the environment variable is either missing or set to anything else then 'yes' (case-insensitive) no ssl certificates will be
 checked or generated
 
 You can change the name of the key and cert file by setting the environment variables CONFIG_SSL_KEY and CONFIG_SSL_CERT.
 
 To generate the certificate to set the environment variable CONFIG_SSL_SUBJ which will be used by openssl to generate the certificate
 without prompt
+
+### download custom landing page
+In addition the containers entrypoint script is able to directly download an index page via http/https.
+which can be displayed when accessing the default page
+To use this behaviour the script checks for the following environment variables.
+INDEX_URL=<url to index.html file>
+INDEX_USERNAME=<username for git authentication or http simple auth>
+INDEX_PASSWORD=<password for git authentication or http simple auth>
