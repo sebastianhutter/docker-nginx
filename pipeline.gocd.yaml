@@ -1,5 +1,5 @@
 pipelines:
-  Build:
+  Build_nginx:
     group: nginx
     label_template: "${repository[:8]}"
     materials:
