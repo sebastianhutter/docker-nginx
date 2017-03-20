@@ -26,4 +26,5 @@ push_latest:
 
 # deploy commit id image to rancher
 deploy_commit:
-	gaucho.py upgrade $(SERVICE_ID) --imageUuid docker:$(IMAGE_NAME):$(COMMIT_ID) --auto_complete
+	/bin/bash -c "source /var/go/.rancher; \
+	  gaucho.py upgrade $(SERVICE_ID) --imageUuid docker:$(IMAGE_NAME):$(COMMIT_ID) --auto_complete"
