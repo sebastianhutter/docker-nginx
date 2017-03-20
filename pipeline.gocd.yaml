@@ -33,7 +33,7 @@ pipelines:
       - Deploy:
           jobs:
             deploy:
-              task:
+              tasks:
                - exec:
                   command: make
                   arguments:
