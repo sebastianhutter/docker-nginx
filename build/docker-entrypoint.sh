@@ -20,7 +20,7 @@ else
 fi
 
 # check for index.html download
-INDEX_LOCAL="/var/www/html/index.html"
+INDEX_LOCAL="/usr/share/nginx/html/index.html"
 # first check if the download url is set. if so try to download the file via curl
 if [ -z "$INDEX_URL" ]; then
   echo "No config url set. Will use local configuration file"
