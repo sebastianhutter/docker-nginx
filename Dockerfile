@@ -9,7 +9,7 @@ RUN apt-get update \
   && apt-get update \
   && apt-get install -y nginx-extras python python-pip \
   && pip install --upgrade j2cli \
-  && rm -rf /var/lib/apt/lists/* /var/www/html/*
+  && rm -rf /var/lib/apt/lists/* /var/www/html/* /etc/nginx/sites-enabled/*
 
 # copy default nginx configuration
 ADD build/nginx.conf /etc/nginx/nginx.conf
